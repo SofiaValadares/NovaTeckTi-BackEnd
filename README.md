@@ -449,6 +449,52 @@ Inclui um novo cliente na tabela `cliente`.
 
 ---
 
+### 3.1. Consulta de perfil do cliente
+
+Retorna os dados do cliente para exibição no frontend (sem a senha).
+
+| Item | Valor |
+|------|-------|
+| **Método** | `GET` |
+| **URL** | `/api/clientes?login={login}` |
+
+#### Exemplo
+
+```
+GET /api/clientes?login=admin@novatech.com
+```
+
+#### Resposta — sucesso
+
+```json
+{
+  "status": "SUCESSO",
+  "mensagem": null,
+  "cliente": {
+    "id": 1,
+    "nome": "Usuário Padrão",
+    "login": "admin@novatech.com",
+    "cpf": "000.000.000-00",
+    "dataNascimento": "1990-01-01",
+    "telefone": "(11) 91234-5678",
+    "estadoCivil": "solteiro(a)",
+    "escolaridade": "2º grau completo"
+  }
+}
+```
+
+#### Resposta — cliente não encontrado
+
+```json
+{
+  "status": "ERRO",
+  "mensagem": "Cliente não encontrado para o login informado.",
+  "cliente": null
+}
+```
+
+---
+
 ### 4. Cadastro de serviço de TI
 
 Inclui um novo serviço; o **ID é gerado automaticamente** pelo banco.
@@ -735,6 +781,7 @@ Configure a URL base da API no frontend (ex.: variável de ambiente `VITE_API_UR
 | `POST` | `/api/autenticacao` | Autenticar cliente |
 | `POST` | `/api/autenticacao/troca-senha` | Trocar senha |
 | `POST` | `/api/clientes` | Cadastrar cliente |
+| `GET` | `/api/clientes?login=` | Consultar perfil do cliente |
 | `POST` | `/api/servicos-ti` | Cadastrar serviço de TI |
 | `GET` | `/api/servicos-ti` | Listar serviços de TI |
 | `GET` | `/api/solicitacoes?login=` | Listar solicitações do usuário |

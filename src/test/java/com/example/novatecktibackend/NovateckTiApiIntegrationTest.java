@@ -42,6 +42,15 @@ class NovateckTiApiIntegrationTest {
     }
 
     @Test
+    void consultarPerfilCliente() throws Exception {
+        mockMvc.perform(get("/api/clientes").param("login", "admin@novatech.com"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("SUCESSO"))
+                .andExpect(jsonPath("$.cliente.nome").value("Usuário Padrão"))
+                .andExpect(jsonPath("$.cliente.login").value("admin@novatech.com"));
+    }
+
+    @Test
     void cadastroClienteDuplicadoRetornaErro() throws Exception {
         String body = """
                 {

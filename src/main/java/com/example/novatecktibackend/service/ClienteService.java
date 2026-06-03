@@ -1,8 +1,11 @@
 package com.example.novatecktibackend.service;
 
+import com.example.novatecktibackend.dto.ClientePerfilResponse;
 import com.example.novatecktibackend.dto.ClienteRequest;
 import com.example.novatecktibackend.dto.OperacaoResponse;
+import com.example.novatecktibackend.dto.StatusOperacao;
 import com.example.novatecktibackend.entity.Cliente;
+import com.example.novatecktibackend.mapper.EntityMapper;
 import com.example.novatecktibackend.repository.ClienteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,5 +43,21 @@ public class ClienteService {
 
     public Cliente buscarPorLogin(String login) {
         return clienteRepository.findByLoginIgnoreCase(login.trim()).orElse(null);
+    }
+
+    public ClientePerfilResponse consultarPorLogin(String login) {
+        Cliente cliente = buscarPorLogin(login);
+        if (cliente == null) {
+            return new ClientePerfilResponse(
+                    StatusOperacao.ERRO,
+                    "Cliente não encontrado para o login informado.",
+                    null
+            );
+        }
+        return new ClientePerfilResponse(
+                StatusOperacao.SUCESSO,
+                null,
+                EntityMapper.toClienteResponse(cliente)
+        );
     }
 }
