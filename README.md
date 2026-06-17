@@ -218,28 +218,31 @@ A API ficará disponível em `http://localhost:8080`.
 
 ## Deploy no Render
 
-O projeto já inclui `render.yaml` e perfil `prod` para publicação na [Render](https://render.com).
+O projeto usa **Docker** (Java 17 não aparece mais como runtime nativo no Render).
 
 ### Opção A — Blueprint (recomendado)
 
-1. Envie o código para o GitHub.
+1. Envie o código para o GitHub (com `Dockerfile` e `render.yaml`).
 2. No Render: **New → Blueprint** e conecte o repositório.
-3. O Render lê o `render.yaml` e cria o Web Service automaticamente.
 
 ### Opção B — Web Service manual
 
+Na tela de criação do serviço:
+
 | Campo | Valor |
 |-------|--------|
-| **Runtime** | Java |
-| **Build Command** | `./mvnw clean package -DskipTests` |
-| **Start Command** | `java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar target/novateck-ti-backend-0.0.1-SNAPSHOT.jar` |
+| **Language** | **Docker** (não Node!) |
+| **Branch** | `main` |
+| **Root Directory** | *(vazio)* |
+| **Dockerfile Path** | `Dockerfile` |
 | **Health Check Path** | `/api/health` |
 
-Variáveis de ambiente:
+**Não use** `yarn` nem `npm` — deixe Build/Start Command vazios; o Docker cuida disso.
+
+Variável opcional:
 
 | Variável | Valor |
 |----------|--------|
-| `JAVA_VERSION` | `17` |
 | `SPRING_PROFILES_ACTIVE` | `prod` |
 
 ### Após o deploy
