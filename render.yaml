@@ -1,0 +1,16 @@
+# Blueprint Render — https://render.com/docs/blueprint-spec
+# Conecte o repositório GitHub e use "New > Blueprint" ou crie Web Service manualmente.
+services:
+  - type: web
+    name: novateck-ti-backend
+    runtime: java
+    plan: free
+    region: oregon
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar target/novateck-ti-backend-0.0.1-SNAPSHOT.jar
+    healthCheckPath: /api/health
+    envVars:
+      - key: JAVA_VERSION
+        value: "17"
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod

@@ -216,6 +216,52 @@ A API ficará disponível em `http://localhost:8080`.
 
 ---
 
+## Deploy no Render
+
+O projeto já inclui `render.yaml` e perfil `prod` para publicação na [Render](https://render.com).
+
+### Opção A — Blueprint (recomendado)
+
+1. Envie o código para o GitHub.
+2. No Render: **New → Blueprint** e conecte o repositório.
+3. O Render lê o `render.yaml` e cria o Web Service automaticamente.
+
+### Opção B — Web Service manual
+
+| Campo | Valor |
+|-------|--------|
+| **Runtime** | Java |
+| **Build Command** | `./mvnw clean package -DskipTests` |
+| **Start Command** | `java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar target/novateck-ti-backend-0.0.1-SNAPSHOT.jar` |
+| **Health Check Path** | `/api/health` |
+
+Variáveis de ambiente:
+
+| Variável | Valor |
+|----------|--------|
+| `JAVA_VERSION` | `17` |
+| `SPRING_PROFILES_ACTIVE` | `prod` |
+
+### Após o deploy
+
+- URL pública: `https://novateck-ti-backend.onrender.com` (o nome pode variar).
+- Teste: `GET https://SUA-URL.onrender.com/api/health` → `{"status":"UP"}`
+- API: `https://SUA-URL.onrender.com/api/...`
+
+No **frontend** (Vercel), altere `src/config/api.ts`:
+
+```typescript
+export const API_BASE_URL = 'https://SUA-URL.onrender.com';
+```
+
+### Observações
+
+- Plano **free** da Render: o serviço **hiberna** após inatividade; a primeira requisição pode demorar ~30–60s.
+- Banco **H2 em memória**: cadastros somem após **restart** ou novo deploy (adequado à AV2).
+- CORS já permite qualquer origem (`WebConfig`); o front na Vercel funciona sem mudança no back.
+
+---
+
 ## Console H2
 
 Com a aplicação rodando:
@@ -770,7 +816,9 @@ Mapeamento sugerido (páginas AV1 / AV2 React):
 | Carrinho — salvar/atualizar lista | `PUT /api/solicitacoes` |
 | Cadastro de serviço (nova página AV2) | `POST /api/servicos-ti` |
 
-Configure a URL base da API no frontend (ex.: variável de ambiente `VITE_API_URL=http://localhost:8080`).
+Configure a URL base da API no frontend (`src/config/api.ts`), por exemplo:
+- Local: `http://localhost:8080`
+- Render: `https://SUA-URL.onrender.com`
 
 ---
 
@@ -778,6 +826,7 @@ Configure a URL base da API no frontend (ex.: variável de ambiente `VITE_API_UR
 
 | Método | Endpoint | Função |
 |--------|----------|--------|
+| `GET` | `/api/health` | Health check (Render / monitoramento) |
 | `POST` | `/api/autenticacao` | Autenticar cliente |
 | `POST` | `/api/autenticacao/troca-senha` | Trocar senha |
 | `POST` | `/api/clientes` | Cadastrar cliente |
